@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мухаммаднофий Улугбеков | Кибербезопасность</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', 'Fira Code', monospace;
+            background: #000;
+            color: #0f0;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Матрица фон */
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.4;
+        }
+
+        /* Основной контент */
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            backdrop-filter: blur(3px);
+        }
+
+        /* Эффект глитча для имени */
+        .glitch {
+            font-size: 2.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            position: relative;
+            text-shadow: 0.05em 0 0 rgba(255,0,0,0.75), -0.05em -0.025em 0 rgba(0,255,0,0.75);
+            animation: glitch 0.3s infinite;
+            margin-bottom: 0.5rem;
+            word-break: break-word;
+        }
+
+        @keyframes glitch {
+            0% { text-shadow: 0.05em 0 0 rgba(255,0,0,0.75), -0.05em -0.025em 0 rgba(0,255,0,0.75); }
+            14% { text-shadow: 0.05em 0 0 rgba(255,0,0,0.75), -0.05em -0.025em 0 rgba(0,255,0,0.75); }
+            15% { text-shadow: -0.05em -0.025em 0 rgba(255,0,0,0.75), 0.025em 0.05em 0 rgba(0,255,0,0.75); }
+            49% { text-shadow: -0.05em -0.025em 0 rgba(255,0,0,0.75), 0.025em 0.05em 0 rgba(0,255,0,0.75); }
+            50% { text-shadow: 0.025em 0.05em 0 rgba(255,0,0,0.75), 0.05em 0 0 rgba(0,255,0,0.75); }
+            99% { text-shadow: 0.025em 0.05em 0 rgba(255,0,0,0.75), 0.05em 0 0 rgba(0,255,0,0.75); }
+            100% { text-shadow: -0.025em 0 0 rgba(255,0,0,0.75), -0.025em -0.025em 0 rgba(0,255,0,0.75); }
+        }
+
+        .tagline {
+            font-size: 1rem;
+            color: #8f8;
+            border-left: 3px solid #0f0;
+            padding-left: 1rem;
+            margin-bottom: 2rem;
+            letter-spacing: 2px;
+        }
+
+        /* Панели */
+        .panel {
+            background: rgba(0, 20, 0, 0.75);
+            backdrop-filter: blur(5px);
+            border: 1px solid #0f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 0 15px rgba(0,255,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .panel:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 25px rgba(0,255,0,0.5);
+        }
+
+        .panel h2 {
+            font-size: 1.6rem;
+            border-bottom: 2px dashed #0f0;
+            display: inline-block;
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 0.8rem 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #6f6;
+            text-shadow: 0 0 3px #0f0;
+        }
+
+        .info-value {
+            word-break: break-word;
+        }
+
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .skill-badge {
+            background: #0a0a0a;
+            border: 1px solid #0f0;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            font-family: monospace;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .skill-badge:hover {
+            background: #0f0;
+            color: #000;
+            box-shadow: 0 0 10px #0f0;
+            cursor: default;
+        }
+
+        .contact-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .contact-links a {
+            color: #0f0;
+            text-decoration: none;
+            font-size: 1.2rem;
+            border: 1px solid #0f0;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0,0,0,0.6);
+        }
+
+        .contact-links a:hover {
+            background: #0f0;
+            color: #000;
+            box-shadow: 0 0 15px #0f0;
+        }
+
+        .typed-cursor {
+            font-size: 1.2rem;
+            opacity: 1;
+            animation: blink 0.7s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1rem;
+            font-size: 0.8rem;
+            border-top: 1px solid #0f0;
+            color: #4f4;
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 1rem; }
+            .glitch { font-size: 1.6rem; }
+            .info-grid { grid-template-columns: 1fr; gap: 0.3rem; }
+            .info-label { margin-top: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="matrix-canvas"></canvas>
+
+    <div class="container">
+        <div class="glitch">МУХАММАДНОФИЙ УЛУГБЕКОВ</div>
+        <div class="tagline">
+            >_ этичный хакер & энтузиаст кибербезопасности <span class="typed-cursor">█</span>
+        </div>
+
+        <div class="panel">
+            <h2>📄 /биография</h2>
+            <div class="info-grid">
+                <span class="info-label">👤 Полное имя:</span>
+                <span class="info-value">Мухаммаднофий Улугбеков</span>
+                
+                <span class="info-label">🎂 Дата рождения:</span>
+                <span class="info-value">19.01.2013 (Возраст: <span id="age"></span> лет)</span>
+                
+                <span class="info-label">⚡ Роль:</span>
+                <span class="info-value">Юный исследователь безопасности | Будущий пентестер</span>
+                
+                <span class="info-label">💡 Девиз:</span>
+                <span class="info-value">"Взломай, чтобы защитить. Будь любопытным, оставайся в тени"</span>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>🛠️ /навыки</h2>
+            <div class="skills">
+                <span class="skill-badge">HTML</span>
+                <span class="skill-badge">CSS</span>
+                <span class="skill-badge">JavaScript</span>
+                <span class="skill-badge">C++</span>
+                <span class="skill-badge">Linux</span>
+                <span class="skill-badge">Кибербезопасность</span>
+                <span class="skill-badge">Кибератаки</span>
+                <span class="skill-badge">Хакинг (этичный)</span>
+                <span class="skill-badge">Мобилография</span>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>🔥 /интересы</h2>
+            <div class="info-grid">
+                <span class="info-label">🎯 Главное:</span>
+                <span class="info-value">Кибербезопасность, кибератаки, защита информации, пентест</span>
+                <span class="info-label">📚 Изучаю:</span>
+                <span class="info-value">Этичный хакинг, OSINT, анализ уязвимостей</span>
+                <span class="info-label">📱 Хобби:</span>
+                <span class="info-value">Мобилография, съёмка на телефон</span>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>📬 /контакты</h2>
+            <div class="contact-links">
+                <a href="https://t.me/xolviss" target="_blank">💬 Telegram: @xolviss</a>
+                <a href="mailto:d74284870@gmail.com">📧 d74284870@gmail.com</a>
+            </div>
+        </div>
+
+        <footer>
+            [~] Мухаммаднофий Улугбеков | этичный хакер | версия 1.0
+        </footer>
+    </div>
+
+    <script>
+        // Подсчёт возраста
+        function calculateAge() {
+            const birthDate = new Date(2013, 0, 19); // 19 января 2013
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            document.getElementById('age').textContent = age;
+        }
+        calculateAge();
+
+        // === АНИМАЦИЯ МАТРИЦЫ ===
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+        
+        canvas.width = width;
+        canvas.height = height;
+
+        const chars = "01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()";
+        const charArray = chars.split('');
+        const fontSize = 18;
+        const columns = width / fontSize;
+        
+        const drops = [];
+        for(let i = 0; i < columns; i++) {
+            drops[i] = Math.floor(Math.random() * -100);
+        }
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, width, height);
+            
+            ctx.fillStyle = '#0f0';
+            ctx.font = fontSize + 'px monospace';
+            
+            for(let i = 0; i < drops.length; i++) {
+                const text = charArray[Math.floor(Math.random() * charArray.length)];
+                const x = i * fontSize;
+                const y = drops[i] * fontSize;
+                
+                ctx.fillText(text, x, y);
+                
+                if(y > height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawMatrix, 35);
+
+        window.addEventListener('resize', () => {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            
+            const newColumns = width / fontSize;
+            for(let i = 0; i < newColumns; i++) {
+                if(drops[i] === undefined) drops[i] = Math.floor(Math.random() * -100);
+            }
+        });
+    </script>
+</body>
+</html>
